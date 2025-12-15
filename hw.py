@@ -8,20 +8,26 @@ import heapq
 '''
 
 
-def heap_sort(iterable, descending=False):
-    # Визначаємо, який знак використовувати залежно від порядку сортування
-    sign = -1 if descending else 1
+def min_cost(lengths):
+    if len(lengths) <= 1:
+        return 0
 
-    # Створюємо купу, використовуючи заданий порядок сортування
-    h = [sign * el for el in iterable]
-    heapq.heapify(h)
-    # Витягуємо елементи, відновлюємо їхні оригінальні значення (якщо потрібно) і формуємо відсортований масив
-    return [sign * heapq.heappop(h) for _ in range(len(h))]
+    heapq.heapify(lengths)
+
+    total_cost = 0
+    while len(lengths) > 1:
+        a = heapq.heappop(lengths)
+        b = heapq.heappop(lengths)
+        cost = a + b
+        total_cost += cost
+        heapq.heappush(lengths, cost)
+
+    return total_cost
 
 
-lengths = [5, 3, 2, 8, 1]
+lengths = [1, 2, 3]
 print(
-    f"Порядок об'єднання, який мінімізує загальні витрати: {heap_sort(lengths)}")
+    f"Мінімальна з можливих сум загальних витрат: {min_cost(lengths)}")
 
 
 '''
@@ -30,8 +36,20 @@ print(
 
 
 def merge_k_lists(lists):
-    merged = [x for sub in lists for x in sub]
-    return heap_sort(merged)
+    lists = lists.copy()
+    merged = []
+    min_heap = []
+
+    while (lists):
+        list = lists.pop()
+        while (list):
+            item = list.pop()
+            heapq.heappush(min_heap, item)
+
+    while min_heap:
+        merged.append(heapq.heappop(min_heap))
+
+    return merged
 
 
 lists = [[1, 4, 5], [1, 3, 4], [2, 6]]
